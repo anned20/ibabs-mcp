@@ -1,0 +1,9 @@
+# Captured live credentials / session data - never commit
+captures/
+.env
+.env.*
+!.env.example
+.playwright-mcp/
+node_modules/
+dist/
+/.scratch
