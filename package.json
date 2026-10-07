@@ -1,6 +1,6 @@
 {
   "name": "ibabs-mcp",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Local MCP server for iBabs: list meetings, agenda items and attachments.",
   "type": "module",
   "bin": {
