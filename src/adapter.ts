@@ -1,5 +1,5 @@
 import { load, type CheerioAPI } from "cheerio";
-import type { Agendapunt, Bijlage, Meeting, MeetingKind, MeetingSummary } from "./types.js";
+import type { AgendaItem, Attachment, Meeting, MeetingKind, MeetingSummary } from "./types.js";
 
 export class AdapterError extends Error {
   override name = "AdapterError";
@@ -121,18 +121,18 @@ function findSize($: CheerioAPI, element: Parameters<CheerioAPI>[0]): string | n
   return null;
 }
 
-interface BijlageDraft {
+interface AttachmentDraft {
   name: string;
   nameFromText: boolean;
   size: string | null;
 }
 
-function parseBijlagen(
+function parseAttachments(
   $: CheerioAPI,
   scope: ReturnType<CheerioAPI>,
   excludeAgendaItems = false,
-): Bijlage[] {
-  const groups = new Map<string, BijlageDraft>();
+): Attachment[] {
+  const groups = new Map<string, AttachmentDraft>();
 
   scope.find("a[href]").each((_, el) => {
     if (excludeAgendaItems && $(el).closest("[data-agendaitem-id]").length > 0) return;
@@ -184,15 +184,15 @@ function parseConfidential($: CheerioAPI, scope: ReturnType<CheerioAPI>): boolea
   return scope.attr("data-confidential") === "true";
 }
 
-function parseAgendapunten($: CheerioAPI, root: ReturnType<CheerioAPI>): Agendapunt[] {
-  const items: Agendapunt[] = [];
+function parseAgendaItems($: CheerioAPI, root: ReturnType<CheerioAPI>): AgendaItem[] {
+  const items: AgendaItem[] = [];
   const seen = new Set<string>();
 
   root.find("[data-agendaitem-id]").each((_, el) => {
     const scope = $(el);
-    const agendaitemId = normalize(scope.attr("data-agendaitem-id"));
-    if (!agendaitemId || seen.has(agendaitemId)) return;
-    seen.add(agendaitemId);
+    const agendaItemId = normalize(scope.attr("data-agendaitem-id"));
+    if (!agendaItemId || seen.has(agendaItemId)) return;
+    seen.add(agendaItemId);
 
     const number =
       normalize(scope.attr("data-agendaitem-number")) ||
@@ -213,9 +213,9 @@ function parseAgendapunten($: CheerioAPI, root: ReturnType<CheerioAPI>): Agendap
     items.push({
       number,
       title,
-      agendaitemId,
+      agendaItemId,
       confidential: parseConfidential($, scope),
-      bijlagen: parseBijlagen($, scope),
+      attachments: parseAttachments($, scope),
     });
   });
 
@@ -266,15 +266,15 @@ export function parseMeetingPage(html: string, context: ParseMeetingContext): Me
     normalize(scope.attr("data-meeting-start")) || context.fallback?.start || null;
   const end = normalize(scope.attr("data-meeting-end")) || context.fallback?.end || null;
 
-  const agendapunten = parseAgendapunten($, scope);
-  const bijlagen = parseBijlagen($, scope, true);
+  const agendaItems = parseAgendaItems($, scope);
+  const attachments = parseAttachments($, scope, true);
 
   const hasMeetingDetails = scope.find("dt").filter((_, el) => {
     const term = normalize($(el).text()).replace(/:$/, "").toLowerCase();
     return ["tijd", "toelichting", "subtitel", "locatie", "voorzitter"].includes(term);
   }).length > 0;
 
-  const found = root.length > 0 || agendapunten.length > 0 || hasMeetingDetails;
+  const found = root.length > 0 || agendaItems.length > 0 || hasMeetingDetails;
 
   if (!found) {
     throw new AdapterError(
@@ -291,7 +291,7 @@ export function parseMeetingPage(html: string, context: ParseMeetingContext): Me
     end,
     kind: context.kind ?? context.fallback?.kind ?? classifyKind(context.url),
     ...(description ? { description } : {}),
-    agendapunten,
-    bijlagen,
+    agendaItems,
+    attachments,
   };
 }

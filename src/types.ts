@@ -10,18 +10,18 @@ export interface MeetingSummary {
   url: string;
 }
 
-export interface Bijlage {
+export interface Attachment {
   documentId: string;
   name: string;
   size: string | null;
 }
 
-export interface Agendapunt {
+export interface AgendaItem {
   number: string;
   title: string;
-  agendaitemId: string;
+  agendaItemId: string;
   confidential: boolean;
-  bijlagen: Bijlage[];
+  attachments: Attachment[];
 }
 
 export interface Meeting {
@@ -31,11 +31,11 @@ export interface Meeting {
   end: string | null;
   kind: MeetingKind;
   description?: string;
-  agendapunten: Agendapunt[];
-  bijlagen: Bijlage[];
+  agendaItems: AgendaItem[];
+  attachments: Attachment[];
 }
 
-export interface Attachment {
+export interface DownloadedAttachment {
   documentId: string;
   name: string;
   mime: string;

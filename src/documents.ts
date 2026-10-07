@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import type { PortalClient } from "./portal-client.js";
-import type { Attachment } from "./types.js";
+import type { DownloadedAttachment } from "./types.js";
 
 interface AttachmentMeta {
   documentId: string;
@@ -79,7 +79,7 @@ export class DocumentService {
     return `${text.slice(0, this.maxTextChars)}\n\n[truncated: document text exceeded ${this.maxTextChars} characters]`;
   }
 
-  async fetch(documentId: string, extractText = true): Promise<Attachment> {
+  async fetch(documentId: string, extractText = true): Promise<DownloadedAttachment> {
     const dir = this.dirFor(documentId);
     let meta = await this.readMeta(dir);
 
@@ -93,7 +93,7 @@ export class DocumentService {
     }
 
     const filePath = path.join(dir, meta.file);
-    const attachment: Attachment = {
+    const attachment: DownloadedAttachment = {
       documentId,
       name: meta.name,
       mime: meta.mime,

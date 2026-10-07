@@ -2,8 +2,8 @@
 
 A local [Model Context Protocol](https://modelcontextprotocol.io) (MCP) server for
 [iBabs](https://www.ibabs.eu/). It logs into an iBabs site with your credentials,
-caches the portal session, and exposes tools to list meetings
-(vergaderingen), read agendapunten, and download bijlagen.
+caches the portal session, and exposes tools to list meetings,
+read agenda items, and download attachments.
 
 ## Install
 
@@ -67,7 +67,7 @@ Restart Hermes (or run `/reload-mcp`). Tools appear as `mcp_ibabs_*`.
 
 - `list_meetings` — list meetings in a date range (defaults to the next 30 days),
   optionally restricted to council/committee meetings.
-- `get_meeting` — one meeting with its agendapunten and bijlagen.
+- `get_meeting` — one meeting with its agenda items and attachments.
 - `get_attachment` — download an attachment by `documentId`, returning a local
   path and, for PDFs/plain text, the extracted text.
 

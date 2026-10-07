@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
-import type { Attachment, Meeting, MeetingSummary } from "../src/types.js";
+import type { DownloadedAttachment, Meeting, MeetingSummary } from "../src/types.js";
 import { createHarness, type Harness } from "./harness.js";
 import { CALENDAR_EVENTS, DOCUMENT_IDS, MEETING_IDS } from "./fixtures.js";
 
@@ -85,7 +85,7 @@ describe("list_meetings", () => {
 });
 
 describe("get_meeting", () => {
-  it("returns a council meeting with agendapunten, bijlagen and confidentiality", async () => {
+  it("returns a council meeting with agenda items, attachments and confidentiality", async () => {
     const h = await harness();
     await h.callTool("list_meetings");
     const meeting = await h.callTool<Meeting>("get_meeting", { id: MEETING_IDS.council });
@@ -94,32 +94,32 @@ describe("get_meeting", () => {
     expect(meeting.kind).toBe("council");
     expect(meeting.start).toBe(CALENDAR_EVENTS[1]!.start);
     expect(meeting.description).toContain("gemeenteraad");
-    expect(meeting.agendapunten.map((a) => a.number)).toEqual(["1", "4", "5"]);
+    expect(meeting.agendaItems.map((a) => a.number)).toEqual(["1", "4", "5"]);
 
-    const item4 = meeting.agendapunten[1]!;
+    const item4 = meeting.agendaItems[1]!;
     expect(item4.title).toContain("Bestuursakkoord");
-    expect(item4.bijlagen.map((b) => b.documentId)).toEqual([DOCUMENT_IDS.pdf, DOCUMENT_IDS.docx]);
-    expect(item4.bijlagen[0]?.size).toBe("151 KB");
+    expect(item4.attachments.map((b) => b.documentId)).toEqual([DOCUMENT_IDS.pdf, DOCUMENT_IDS.docx]);
+    expect(item4.attachments[0]?.size).toBe("151 KB");
 
-    const item5 = meeting.agendapunten[2]!;
+    const item5 = meeting.agendaItems[2]!;
     expect(item5.confidential).toBe(true);
-    expect(item5.bijlagen.map((b) => b.documentId)).toEqual([DOCUMENT_IDS.confidential]);
+    expect(item5.attachments.map((b) => b.documentId)).toEqual([DOCUMENT_IDS.confidential]);
   });
 
-  it("exposes meeting-level bijlagen separately from the agenda items", async () => {
+  it("exposes meeting-level attachments separately from the agenda items", async () => {
     const h = await harness();
     await h.callTool("list_meetings");
     const meeting = await h.callTool<Meeting>("get_meeting", { id: MEETING_IDS.council });
 
-    expect(meeting.bijlagen.map((b) => b.documentId)).toEqual([DOCUMENT_IDS.meetingLevel]);
-    expect(meeting.bijlagen[0]?.name).toBe("Vastgestelde besluitenlijst");
-    expect(meeting.bijlagen[0]?.size).toBe("161 KB");
+    expect(meeting.attachments.map((b) => b.documentId)).toEqual([DOCUMENT_IDS.meetingLevel]);
+    expect(meeting.attachments[0]?.name).toBe("Vastgestelde besluitenlijst");
+    expect(meeting.attachments[0]?.size).toBe("161 KB");
 
-    const allDocuments = meeting.agendapunten.flatMap((a) => a.bijlagen.map((b) => b.documentId));
+    const allDocuments = meeting.agendaItems.flatMap((a) => a.attachments.map((b) => b.documentId));
     expect(allDocuments).not.toContain(DOCUMENT_IDS.meetingLevel);
   });
 
-  it("degrades gracefully for a webinar with no agendapunten", async () => {
+  it("degrades gracefully for a webinar with no agenda items", async () => {
     const h = await harness();
     await h.callTool("list_meetings");
     const meeting = await h.callTool<Meeting>("get_meeting", { id: MEETING_IDS.webinar });
@@ -127,10 +127,10 @@ describe("get_meeting", () => {
     expect(meeting.kind).toBe("other");
     expect(meeting.title).toBe("Webinar Omgevingswet");
     expect(meeting.description).toBe("Extern webinar over de Omgevingswet.");
-    expect(meeting.agendapunten).toEqual([]);
-    expect(meeting.bijlagen.map((b) => b.documentId)).toEqual([DOCUMENT_IDS.webinarLevel]);
-    expect(meeting.bijlagen[0]?.name).toBe("Presentatie Omgevingswet.pdf");
-    expect(meeting.bijlagen[0]?.size).toBe("2 MB");
+    expect(meeting.agendaItems).toEqual([]);
+    expect(meeting.attachments.map((b) => b.documentId)).toEqual([DOCUMENT_IDS.webinarLevel]);
+    expect(meeting.attachments[0]?.name).toBe("Presentatie Omgevingswet.pdf");
+    expect(meeting.attachments[0]?.size).toBe("2 MB");
   });
 
   it("falls back to the meeting view when there is no agenda page", async () => {
@@ -145,7 +145,7 @@ describe("get_meeting", () => {
 describe("get_attachment", () => {
   it("extracts text from a PDF", async () => {
     const h = await harness();
-    const attachment = await h.callTool<Attachment>("get_attachment", { documentId: DOCUMENT_IDS.pdf });
+    const attachment = await h.callTool<DownloadedAttachment>("get_attachment", { documentId: DOCUMENT_IDS.pdf });
     expect(attachment.mime).toContain("pdf");
     expect(attachment.name).toContain("Raadsvoorstel");
     expect(attachment.text).toContain("Hello iBabs");
@@ -153,14 +153,14 @@ describe("get_attachment", () => {
 
   it("returns plain text files as text", async () => {
     const h = await harness();
-    const attachment = await h.callTool<Attachment>("get_attachment", { documentId: DOCUMENT_IDS.text });
+    const attachment = await h.callTool<DownloadedAttachment>("get_attachment", { documentId: DOCUMENT_IDS.text });
     expect(attachment.mime).toContain("text/plain");
     expect(attachment.text).toContain("Notulen van de vergadering.");
   });
 
   it("returns unsupported types by path and mime without text", async () => {
     const h = await harness();
-    const attachment = await h.callTool<Attachment>("get_attachment", { documentId: DOCUMENT_IDS.docx });
+    const attachment = await h.callTool<DownloadedAttachment>("get_attachment", { documentId: DOCUMENT_IDS.docx });
     expect(attachment.mime).toContain("wordprocessingml");
     expect(attachment.text).toBeUndefined();
     expect(attachment.path).toContain(DOCUMENT_IDS.docx);
@@ -170,16 +170,16 @@ describe("get_attachment", () => {
     const h = await harness();
     await h.callTool("list_meetings");
     const meeting = await h.callTool<Meeting>("get_meeting", { id: MEETING_IDS.council });
-    const documentId = meeting.bijlagen[0]!.documentId;
+    const documentId = meeting.attachments[0]!.documentId;
 
-    const attachment = await h.callTool<Attachment>("get_attachment", { documentId });
+    const attachment = await h.callTool<DownloadedAttachment>("get_attachment", { documentId });
     expect(attachment.name).toContain("besluitenlijst");
     expect(attachment.text).toContain("Besluitenlijst van de vergadering.");
   });
 
   it("can skip text extraction", async () => {
     const h = await harness();
-    const attachment = await h.callTool<Attachment>("get_attachment", {
+    const attachment = await h.callTool<DownloadedAttachment>("get_attachment", {
       documentId: DOCUMENT_IDS.pdf,
       extractText: false,
     });

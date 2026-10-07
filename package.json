@@ -1,7 +1,7 @@
 {
   "name": "ibabs-mcp",
   "version": "0.1.1",
-  "description": "Local MCP server for iBabs: list meetings, agendapunten and bijlagen.",
+  "description": "Local MCP server for iBabs: list meetings, agenda items and attachments.",
   "type": "module",
   "bin": {
     "ibabs-mcp": "dist/index.js"
@@ -23,7 +23,7 @@
     "mcp",
     "modelcontextprotocol",
     "ibabs",
-    "vergaderingen",
+    "meetings",
     "council"
   ],
   "author": "Anne Douwe Bouma",
