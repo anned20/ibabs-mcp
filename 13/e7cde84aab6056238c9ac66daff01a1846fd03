@@ -1,0 +1,56 @@
+docs/ibabs-auth-flow.md
+  s_ee2c6c5407afba::t_93144b2bb50c07 44
+  s_ee2c6c5407afba::t_00be61241bc5c0 48
+  s_ee2c6c5407afba::t_363715c6e4075f 3
+  s_ee2c6c5407afba::t_3d9c9c4a8887ad 55-56
+  s_ee2c6c5407afba::t_8c2c4801a7254a 1-2
+  s_ee2c6c5407afba::t_05f88390daf3e0 4-6,41-43
+  s_ee2c6c5407afba::t_c852412f6e38bb 45-47
+  s_ee2c6c5407afba::t_95e7b5e0b9eb94 49-54
+  s_ee2c6c5407afba::t_2ee2f416f1441f 57-59
+package.json
+  s_ee2c6c5407afba::t_50fc0ba23f0484 8,12,15-42,45,51
+  s_ee2c6c5407afba::t_2974aec166f251 5-7
+  s_ee2c6c5407afba::t_2e7b4cd5fcd6b8 9-11
+  s_ee2c6c5407afba::t_761a88f7c1006d 13-14
+  s_ee2c6c5407afba::t_c700229feed033 43-44
+  s_ee2c6c5407afba::t_21f6ab23919316 46-50
+  s_ee2c6c5407afba::t_9feb6bf8dd58e6 52-54
+README.md
+  s_ee2c6c5407afba::t_4b9c1992c23292 1-24,26-51,53-85,87-118
+  s_ee2c6c5407afba::t_c68399d3ad33ed 25,52,86
+.github/workflows/publish.yml
+  s_ee2c6c5407afba::t_e61fe9defb02bd 1-32
+LICENSE
+  s_ee2c6c5407afba::t_7b5f0a0dd05785 1-21
+test/fixtures.ts
+  s_ee2c6c5407afba::t_ffae08b76627cc 19-21
+  s_ee2c6c5407afba::t_f9d7bc144eabd7 210
+  s_ee2c6c5407afba::t_ea310861e801ec 16-18
+  s_ee2c6c5407afba::t_99806e119dd6fe 22-24,207-209
+  s_ee2c6c5407afba::t_f6f8b07ef8ece5 211-213
+test/config.test.ts
+  s_ee2c6c5407afba::t_b23c2a67c67e5d 14-15
+  s_ee2c6c5407afba::t_2ddf232b153fee 24-25
+  s_ee2c6c5407afba::t_859ec089a53abf 11-13
+  s_ee2c6c5407afba::t_05aa99ccce2035 16-18,21-23
+  s_ee2c6c5407afba::t_66d9f75a102796 26-28
+.github/workflows/ci.yml
+  s_ee2c6c5407afba::t_ce2fb720494d8e 1-23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "13e7cde84aab6056238c9ac66daff01a1846fd03",
+  "prompts": {},
+  "sessions": {
+    "s_ee2c6c5407afba": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_ee8caeaf4ffe1bT28oAdunxuUO",
+        "model": "deepseek-v4.1-flash"
+      },
+      "human_author": "Anne Douwe Bouma <ad.bouma@247kooi.com>"
+    }
+  }
+}
