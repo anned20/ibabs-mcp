@@ -1,0 +1,21 @@
+package-lock.json
+  s_96c469026bcc07::t_9625c418609a2c 3,9
+package.json
+  s_96c469026bcc07::t_3cfce3d6bae048 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8b0a7099b2eebd3bf4ff2836d96aafcbb49c3c38",
+  "prompts": {},
+  "sessions": {
+    "s_96c469026bcc07": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_ee87a88ddffeI5inKxNSR07GY2",
+        "model": "deepseek-v4.1-flash"
+      },
+      "human_author": "Anne Douwe Bouma <ad.bouma@247kooi.com>"
+    }
+  }
+}
