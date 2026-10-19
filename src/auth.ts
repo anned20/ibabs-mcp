@@ -12,6 +12,8 @@ export class AuthError extends Error {
 const USER_AGENT =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0 Safari/537.36";
 
+const SESSION_COOKIE_NAMES = ["__Host-ibabsportal", "__Host-ibabs-session"];
+
 function redirectLocation(response: HttpResponse): string | undefined {
   const location = headerValue(response, "location");
   if (!location) return undefined;
@@ -64,7 +66,7 @@ export class AuthManager {
     jar: CookieJar = new CookieJar(),
   ) {
     this.jar = jar;
-    if (config.sessionCookie && !this.jar.has("__Host-ibabsportal")) {
+    if (config.sessionCookie && !this.jar.has("__Host-ibabsportal", config.portalUrl)) {
       this.jar.setCookie({
         name: "__Host-ibabsportal",
         value: config.sessionCookie,
@@ -78,14 +80,16 @@ export class AuthManager {
   }
 
   isAuthenticated(): boolean {
-    return this.jar.has("__Host-ibabsportal");
+    // The portal prefixes its session cookie with the host: __Host-ibabsportal on
+    // portal.ibabs.eu, __Host-ibabs-session on the per-site portals (portal0600.ibabs.eu).
+    return SESSION_COOKIE_NAMES.some((name) => this.jar.has(name, this.config.portalUrl));
   }
 
   async load(): Promise<boolean> {
     try {
       const raw = await fs.readFile(this.sessionPath, "utf8");
       this.jar = CookieJar.fromJSON(JSON.parse(raw));
-      if (this.config.sessionCookie && !this.jar.has("__Host-ibabsportal")) {
+      if (this.config.sessionCookie && !this.jar.has("__Host-ibabsportal", this.config.portalUrl)) {
         this.jar.setCookie({
           name: "__Host-ibabsportal",
           value: this.config.sessionCookie,

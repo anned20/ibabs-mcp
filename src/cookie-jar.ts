@@ -167,9 +167,15 @@ export class CookieJar {
       .join("; ");
   }
 
-  has(name: string): boolean {
+  has(name: string, url?: string): boolean {
+    const host = url === undefined ? undefined : new URL(url).hostname;
     const now = Date.now() / 1000;
-    return this.cookies.some((c) => c.name === name && (c.expires === null || c.expires > now));
+    return this.cookies.some(
+      (c) =>
+        c.name === name &&
+        (c.expires === null || c.expires > now) &&
+        (host === undefined || domainMatches(c.domain, host)),
+    );
   }
 
   get(name: string): Cookie | undefined {
