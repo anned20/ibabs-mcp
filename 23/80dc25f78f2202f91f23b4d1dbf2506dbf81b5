@@ -1,0 +1,18 @@
+.github/workflows/publish.yml
+  h_1a6b0cc05bf029 16-17,37-38,42
+scripts/release-notes.ts
+  h_1a6b0cc05bf029 1-102
+test/release-notes.test.ts
+  h_1a6b0cc05bf029 1-43
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2380dc25f78f2202f91f23b4d1dbf2506dbf81b5",
+  "prompts": {},
+  "humans": {
+    "h_1a6b0cc05bf029": {
+      "author": "Anne Douwe Bouma <ad.bouma@247kooi.com>"
+    }
+  }
+}
