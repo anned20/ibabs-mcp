@@ -1,0 +1,16 @@
+package-lock.json
+  h_1a6b0cc05bf029 3,9
+package.json
+  h_1a6b0cc05bf029 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "cf6d3b6f532f063bc27f161a4b741667ae6ac81a",
+  "prompts": {},
+  "humans": {
+    "h_1a6b0cc05bf029": {
+      "author": "Anne Douwe Bouma <ad.bouma@247kooi.com>"
+    }
+  }
+}
