@@ -1,0 +1,18 @@
+src/auth.ts
+  h_1a6b0cc05bf029 152,158,161-168,170-171,175-176
+test/fixtures.ts
+  h_1a6b0cc05bf029 61,81,142-149
+test/login.test.ts
+  h_1a6b0cc05bf029 7-8,41-82
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1f9abcbf84c7ca7ebd7e3bca51df2dd35f5e24ff",
+  "prompts": {},
+  "humans": {
+    "h_1a6b0cc05bf029": {
+      "author": "Anne Douwe Bouma <ad.bouma@247kooi.com>"
+    }
+  }
+}
