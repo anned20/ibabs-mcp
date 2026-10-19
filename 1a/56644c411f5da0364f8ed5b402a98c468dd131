@@ -1,0 +1,16 @@
+.github/workflows/publish.yml
+  h_1a6b0cc05bf029 38-43
+cliff.toml
+  h_1a6b0cc05bf029 1-28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1a56644c411f5da0364f8ed5b402a98c468dd131",
+  "prompts": {},
+  "humans": {
+    "h_1a6b0cc05bf029": {
+      "author": "Anne Douwe Bouma <ad.bouma@247kooi.com>"
+    }
+  }
+}
