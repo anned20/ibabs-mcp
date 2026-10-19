@@ -149,27 +149,31 @@ export class AuthManager {
     const portal = this.config.portalUrl;
 
     let response = await this.rawSend({ method: "GET", url: `${portal}/Account/Login?ReturnUrl=%2F` });
-    let location = redirectLocation(response);
-    if (!location) {
+    if (!redirectLocation(response)) {
       throw new AuthError(
         `iBabs login flow did not redirect from ${portal}/Account/Login. The portal may be unreachable or changed.`,
       );
     }
 
-    response = await this.rawSend({ method: "GET", url: location });
-    location = redirectLocation(response) ?? location;
-
-    response = await this.rawSend({ method: "GET", url: location });
+    response = await this.followRedirects(response);
     const loginHtml = bodyText(response);
     const { requestVerificationToken, viewState } = parseLoginForm(loginHtml);
-    if (!requestVerificationToken) {
+    const hasPasswordField = /<input[^>]*name=["']Password["']/i.test(loginHtml);
+    if (!requestVerificationToken || !hasPasswordField) {
+      // With a live signon session the OAuth hop hands back a code without ever
+      // rendering the login form, so the chain ends on an authenticated portal page.
+      if (this.isAuthenticated()) {
+        await this.persist();
+        return;
+      }
       throw new AuthError(
-        "Could not find the antiforgery token on the iBabs login page. The login markup may have changed.",
+        `iBabs login ended on ${response.url} (HTTP ${response.status}) without a login form or a portal session. ` +
+          "The login flow may have changed.",
       );
     }
 
-    const loginUrl = new URL(location);
-    const returnUrl = loginUrl.searchParams.get("ReturnUrl") ?? location;
+    const loginUrl = new URL(response.url);
+    const returnUrl = loginUrl.searchParams.get("ReturnUrl") ?? response.url;
 
     const loginOptionsUrl = new URL(this.config.loginUrl);
     loginOptionsUrl.pathname = `/Site/GetLoginOptions/${encodeURIComponent(this.config.site)}`;

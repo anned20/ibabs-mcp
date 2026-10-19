@@ -58,7 +58,7 @@ export function loginPageHtml(): string {
 </body></html>`;
 }
 
-export function authRoutes(config: Config): Route[] {
+export function authRoutes(config: Config, options: { sso?: boolean } = {}): Route[] {
   const authorize = authorizeUrl(config);
   const loginWithReturn = `${config.loginUrl}?ReturnUrl=${encodeURIComponent(authorize)}`;
   const signonOrigin = new URL(config.loginUrl).origin;
@@ -78,7 +78,7 @@ export function authRoutes(config: Config): Route[] {
       handler: (_req, { count }) => {
         // Odd calls are the pre-login authorize (step 2); even calls are the
         // post-login authorize that hands back an authorization code (step 6).
-        if (count % 2 === 1) {
+        if (!options.sso && count % 2 === 1) {
           return redirect(302, loginWithReturn, [
             "temp-check=abc; Path=/; Secure; HttpOnly",
             "redirect-check=1; Path=/; Secure",
@@ -139,7 +139,14 @@ export function authRoutes(config: Config): Route[] {
         const url = new URL(req.url);
         return url.origin === portalOrigin && url.pathname === "/";
       },
-      handler: () => html(200, "<html><body>iBabs portal</body></html>"),
+      // The real authenticated portal page carries an antiforgery token but no password field.
+      handler: () =>
+        html(
+          200,
+          options.sso
+            ? '<html><body><input type="hidden" name="__RequestVerificationToken" value="portal-token" /></body></html>'
+            : "<html><body>iBabs portal</body></html>",
+        ),
     },
   ];
 }
